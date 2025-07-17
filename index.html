@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delola's Closet</title>
+  <meta name="description" content="Delola's Closet – Affordable fashion in Ikeja. Explore trendy tees, crop tops, bodysuits, handbags & heels. Fast delivery across Nigeria." />
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+</head>
+<body>
+<!-- ========== NAVBAR + HERO ========== -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <img src="images/logo-img.png" alt="Delola's Closet logo" class="nav-logo">
+  </div>
+
+  <!-- Cart Button (with count bubble) -->
+  <button id="openCart" class="cart-icon" data-count="0" aria-label="View Cart">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-bubble" id="cartBubble">0</span>
+  </button>
+
+  <button id="menuToggle" class="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <ul id="navLinks" class="nav-links">
+    <li><a href="#categoryGrid">Products</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#faq">FAQs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<header class="hero">
+  <div class="hero-text">
+    <p>Online Fashion Store in Ikeja</p>
+    <a href="#categoryGrid" class="cta-btn">
+      <i class="fas fa-shopping-bag"></i> Shop&nbsp;Now
+    </a>
+  </div>
+</header>
+
+<section id="categoryGrid" class="category-grid">
+  <h2>Product&nbsp;Categories</h2>
+
+  <div class="catCard" data-cat="cat‑1" data-aos="fade-in" data-aos-delay="200">
+    <img src="images/product1.jpeg" alt="Trendy Tees">
+    <p>Trendy&nbsp;Tees</p>
+  </div>
+
+  <div class="catCard" data-cat="cat‑2" data-aos="fade-in" data-aos-delay="200">
+    <img src="images/product2.jpeg" alt="Crop Tops">
+    <p>Crop&nbsp;Tops</p>
+  </div>
+
+  <div class="catCard" data-cat="cat‑3" data-aos="fade-up" data-aos-delay="200">
+    <img src="images/product3.jpeg" alt="Bodysuits">
+    <p>Bodysuits</p>
+  </div>
+
+  <div class="catCard" data-cat="cat‑4" data-aos="fade-up" data-aos-delay="200">
+    <img src="images/product1.jpeg" alt="Accessories">
+    <p>Accessories</p>
+  </div>
+</section>
+
+<div class="back-wrap">
+  <button id="backBtn" class="backBtn" style="display:none;">← Back to categories</button>
+</div>
+
+<!-- Product Grid -->
+<section class="products" id="products">
+  <div class="product-grid" id="productGrid">
+    <!-- Category 1 Products -->
+    <div class="product-card" data-cat="cat‑1">
+      <img src="images/product1.jpeg" alt="Basic Tee">
+      <div class="product-info">
+        <p>Basic Tee</p>
+        <span class="price">₦7,000</span>
+      </div>
+      <button class="add-cart" data-name="Basic Tee" data-price="7000" data-img="images/product1.jpeg">Add to Cart</button>
+    </div>
+
+    <div class="product-card" data-cat="cat‑1">
+      <img src="images/product2.jpeg" alt="Premium Tee">
+      <div class="product-info">
+        <p>Premium Tee</p>
+        <span class="price">₦8,500</span>
+      </div>
+      <button class="add-cart" data-name="Premium Tee" data-price="8500" data-img="images/product2.jpeg">Add to Cart</button>
+    </div>
+
+    <!-- Category 2 Products -->
+    <div class="product-card" data-cat="cat‑2">
+      <img src="images/product2.jpeg" alt="Stylish Crop Top">
+      <div class="product-info">
+        <p>Stylish Crop Top</p>
+        <span class="price">₦5,000</span>
+      </div>
+      <button class="add-cart" data-name="Stylish Crop Top" data-price="5000" data-img="images/product2.jpeg">Add to Cart</button>
+    </div>
+
+    <!-- Category 3 Products -->
+    <div class="product-card" data-cat="cat‑3">
+      <img src="images/product3.jpeg" alt="Ankara Bodysuit">
+      <div class="product-info">
+        <p>Ankara Bodysuit</p>
+        <span class="price">₦12,000</span>
+      </div>
+      <button class="add-cart" data-name="Ankara Bodysuit" data-price="12000" data-img="images/product3.jpeg">Add to Cart</button>
+    </div>
+
+    <!-- Category 4 Products -->
+    <div class="product-card" data-cat="cat‑4">
+      <img src="images/product1.jpeg" alt="Designer Handbag">
+      <div class="product-info">
+        <p>Designer Handbag</p>
+        <span class="price">₦15,000</span>
+      </div>
+      <button class="add-cart" data-name="Designer Handbag" data-price="15000" data-img="images/product1.jpeg">Add to Cart</button>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <h2>Why Shop With Us</h2>
+  <div class="why-features">
+    <div class="feature"><i class="fas fa-shipping-fast"></i><p>Fast Delivery Nationwide</p></div>
+    <div class="feature"><i class="fas fa-tags"></i><p>Affordable & Trendy</p></div>
+    <div class="feature"><i class="fas fa-smile-beam"></i><p>Trusted Support</p></div>
+    <div class="feature"><i class="fas fa-star"></i><p>Quality Guaranteed</p></div>
+  </div>
+</section>
+
+<section class="testimonials" id="testimonials">
+  <h2>What Customers Are Saying</h2>
+  <div class="testimonial-grid">
+    <div class="testimonial-card" >
+      <img src="images/testimonial1.jpeg" alt="WhatsApp chat screenshot" />
+      <p class="caption">"It's so beautiful, thank you so much!"</p>
+    </div>
+    <div class="testimonial-card">
+      <img src="images/testimonial2.jpeg" alt="WhatsApp chat screenshot" />
+      <p class="caption">"Love love them!"</p>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <button class="faq-question">Do you have a physical store? <i class="fas fa-chevron-down arrow-icon"></i></button>
+    <div class="faq-answer">We currently sell online only, shipping from Ikeja to all 36 states.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-question">Can I stockpile? <i class="fas fa-chevron-down arrow-icon"></i></button>
+    <div class="faq-answer">Yes. We can hold items for 48 hrs once a deposit is made.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-question">Do you merge orders between customers? <i class="fas fa-chevron-down arrow-icon"></i></button>
+    <div class="faq-answer">For hygiene reasons we ship orders separately. Each customer receives a sealed package.</div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <h2>Get in Touch</h2>
+  <div class="contact-grid">
+    <a href="tel:+2348165619521" class="contact-card"><i class="fas fa-phone" id="ph"></i><span>+234 816 561 9521</span><small>Call Us</small></a>
+    <a href="https://wa.me/2348165619521" target="_blank" class="contact-card"><i class="fab fa-whatsapp" id="wa"></i><span>Chat on WhatsApp</span><small>24/7 Support</small></a>
+    <a href="https://instagram.com/delolas_closet" target="_blank" class="contact-card"><i class="fab fa-instagram" id="ig"></i><span>@delolas_closet</span><small>DM on Instagram</small></a>
+    <a href="https://facebook.com/delolas_closet" target="_blank" class="contact-card"><i class="fab fa-facebook-f" id="fb"></i><span>Facebook Page</span><small>Join the community</small></a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p>© 2025 Delola's Closet. All rights reserved.</p>
+  <p>Website by <a href="https://trickyaceportfolio.netlify.app" target="_blank">Tricky Ace</a></p>
+</footer>
+
+<button class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Off‑Canvas Cart -->
+<div id="cartDrawer" class="cart-drawer">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button id="closeCart" class="close-btn">&times;</button>
+  </div>
+  <ul id="cart-items"></ul>
+  <p>Total: ₦<span id="cart-total">0</span></p>
+  <button id="checkoutBtn">Checkout</button>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" class="modal-overlay">
+  <div class="modal-content">
+    <button id="cancelBtn" class="close-modal" aria-label="Close">&times;</button>
+    <h2>Checkout</h2>
+
+    <ul id="orderPreview"></ul>
+    <p class="modal-total">Sub‑Total: ₦<span id="modalSub">0</span></p>
+
+    <label for="shipSelect" class="field">Shipping
+      <select id="shipSelect" required>
+        <option value="0">Pick‑up in Ikeja – ₦0</option>
+        <option value="2000">Lagos – ₦2,000</option>
+        <option value="3500">Other states – ₦3,500</option>
+      </select>
+    </label>
+
+    <p class="modal-total grand">Grand Total: ₦<span id="grandTotal">0</span></p>
+
+    <label for="fullName" class="field">Full Name
+      <input id="fullName" type="text" placeholder="Jane Doe" required aria-required="true">
+    </label>
+
+    <label for="email" class="field">Email
+      <input id="email" type="email" placeholder="you@example.com" required aria-required="true">
+    </label>
+
+    <label for="phone" class="field">Phone
+      <input id="phone" type="tel" placeholder="08012345678" required aria-required="true">
+    </label>
+
+    <label for="address" class="field">Delivery Address
+      <textarea id="address" rows="2" placeholder="Street, City, State" required aria-required="true"></textarea>
+    </label>
+
+    <label for="note" class="field">Order Note (optional)
+      <textarea id="note" rows="2" placeholder="Colour / size…"></textarea>
+    </label>
+
+    <div class="modal-actions">
+      <button id="payNowBtn" class="btn-primary">Pay Now</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
