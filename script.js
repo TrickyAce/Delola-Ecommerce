@@ -296,7 +296,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerName = fullName.value.trim()
     const customerPhone = phone.value.trim()
     const customerAddress = address.value.trim()
-    const shippingOption = shipSelect.value // Get the selected shipping option value
+
+    // NEW: Get the text content of the selected shipping option
+    const selectedShippingOption = shipSelect.options[shipSelect.selectedIndex].textContent
+    const shippingPrice = +shipSelect.value // Still need the price for total calculation
+
     const orderNotesVal = (orderNotes?.value || "").trim() // Get the notes value, default to empty string
 
     if (amount <= 0) {
@@ -334,8 +338,8 @@ document.addEventListener("DOMContentLoaded", () => {
               customerEmail: customerEmail,
               cartItems: cartItems,
               amount: amount / 100, // Send amount back in Naira for server-side check
-              shippingOption: shippingOption, // Add shipping option to server payload
-              orderNotes: orderNotesVal, // Add order notes to server payload
+              shippingOption: selectedShippingOption, // Send the descriptive text
+              orderNotes: orderNotesVal,
             }),
           })
 
@@ -350,8 +354,32 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCart(false)
             modal?.classList.remove("show")
 
-            // TODO: In the next step, we'll add logic here to trigger email sending
-            // using another serverless function.
+            // NEW: Call the serverless function to send confirmation emails
+            try {
+              const emailResponse = await fetch("/.netlify/functions/send-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  customerEmail: customerEmail,
+                  cartItems: cartItems, // Note: cartItems is already cleared here, so pass the original from verificationData if needed
+                  amount: amount / 100, // Send amount back in Naira
+                  shippingOption: selectedShippingOption,
+                  orderNotes: orderNotesVal,
+                  transactionRef: transactionRef, // Pass the transaction reference
+                }),
+              })
+
+              const emailData = await emailResponse.json()
+              if (emailResponse.ok) {
+                console.log("Email sending initiated successfully:", emailData)
+              } else {
+                console.error("Failed to send confirmation emails:", emailData)
+                alert("Order confirmed, but failed to send confirmation emails. Please contact support.")
+              }
+            } catch (emailError) {
+              console.error("Error calling email function:", emailError)
+              alert("An error occurred while trying to send confirmation emails. Please contact support.")
+            }
           } else {
             console.error("Server-side verification failed:", verificationData)
             alert("Payment successful, but verification failed. Please contact support.")
@@ -382,8 +410,8 @@ document.addEventListener("DOMContentLoaded", () => {
         customer_phone: customerPhone,
         customer_address: customerAddress,
         cart_items: JSON.stringify(cartItems),
-        shipping_option: shippingOption, // Add shipping option to metadata
-        order_notes: orderNotesVal, // Add order notes to metadata
+        shipping_option: selectedShippingOption, // Use the descriptive text here
+        order_notes: orderNotesVal,
         custom_fields: [
           // Optional: for display on Paystack dashboard
           {
@@ -409,7 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             display_name: "Shipping Option",
             variable_name: "shipping_option",
-            value: shippingOption,
+            value: selectedShippingOption, // Use the descriptive text here
           },
           {
             display_name: "Order Notes",
