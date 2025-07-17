@@ -1,0 +1,16 @@
+{
+  "name": "delola-closet-ecommerce",
+  "version": "1.0.0",
+  "description": "E-commerce site for Delola's Closet with Paystack and Resend integration.",
+  "main": "main.js",
+  "scripts": {
+    "start": "netlify dev",
+    "build": "echo 'No specific build command needed for static site + functions'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "resend": "^3.2.0"
+  }
+}
