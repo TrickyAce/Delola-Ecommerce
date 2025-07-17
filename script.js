@@ -340,6 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
               amount: amount / 100, // Send amount back in Naira for server-side check
               shippingOption: selectedShippingOption, // Send the descriptive text
               orderNotes: orderNotesVal,
+              customerName: customerName, // <--- ADD THIS LINE
             }),
           })
 
@@ -365,7 +366,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   amount: amount / 100, // Send amount back in Naira
                   shippingOption: selectedShippingOption,
                   orderNotes: orderNotesVal,
-                  transactionRef: transactionRef, // Pass the transaction reference
+                  transactionRef: transactionRef,
+                  customerName: customerName, // <--- ADD THIS LINE
                 }),
               })
 
@@ -399,6 +401,10 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Payment cancelled by user.")
     }
 
+    const readableCartItems = cartItems
+      .map((item) => `${item.qty}x ${item.name} (₦${item.price.toLocaleString()})`)
+      .join("; ")
+
     const handler = PaystackPop.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email: customerEmail,
@@ -409,8 +415,8 @@ document.addEventListener("DOMContentLoaded", () => {
         customer_name: customerName,
         customer_phone: customerPhone,
         customer_address: customerAddress,
-        cart_items: JSON.stringify(cartItems),
-        shipping_option: selectedShippingOption, // Use the descriptive text here
+        cart_items: readableCartItems,
+        shipping_option: selectedShippingOption,
         order_notes: orderNotesVal,
         custom_fields: [
           // Optional: for display on Paystack dashboard
@@ -432,12 +438,12 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             display_name: "Cart Items",
             variable_name: "cart_items",
-            value: JSON.stringify(cartItems),
+            value: readableCartItems,
           },
           {
             display_name: "Shipping Option",
             variable_name: "shipping_option",
-            value: selectedShippingOption, // Use the descriptive text here
+            value: selectedShippingOption,
           },
           {
             display_name: "Order Notes",
