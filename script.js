@@ -354,34 +354,6 @@ document.addEventListener("DOMContentLoaded", () => {
             saveCart()
             renderCart(false)
             modal?.classList.remove("show")
-
-            // NEW: Call the serverless function to send confirmation emails
-            try {
-              const emailResponse = await fetch("/.netlify/functions/send-email", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  customerEmail: customerEmail,
-                  cartItems: cartItems, // Note: cartItems is already cleared here, so pass the original from verificationData if needed
-                  amount: amount / 100, // Send amount back in Naira
-                  shippingOption: selectedShippingOption,
-                  orderNotes: orderNotesVal,
-                  transactionRef: transactionRef,
-                  customerName: customerName, // <--- ADD THIS LINE
-                }),
-              })
-
-              const emailData = await emailResponse.json()
-              if (emailResponse.ok) {
-                console.log("Email sending initiated successfully:", emailData)
-              } else {
-                console.error("Failed to send confirmation emails:", emailData)
-                alert("Order confirmed, but failed to send confirmation emails. Please contact support.")
-              }
-            } catch (emailError) {
-              console.error("Error calling email function:", emailError)
-              alert("An error occurred while trying to send confirmation emails. Please contact support.")
-            }
           } else {
             console.error("Server-side verification failed:", verificationData)
             alert("Payment successful, but verification failed. Please contact support.")
