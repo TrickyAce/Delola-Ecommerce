@@ -1,6 +1,6 @@
 /* =========================================================
-   DELOLA'S CLOSET – MAIN JS
-   ========================================================= */
+DELOLA'S CLOSET – MAIN JS
+========================================================= */
 
 console.log("Script started...")
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     productGrid.classList.add("hidden")
     products.forEach((p) => p.classList.add("hide"))
     backBtn.style.display = "none"
-    catGrid.scrollIntoView({ behavior: "smooth" })
+    catGrid.scrollBy({ top: -catGrid.getBoundingClientRect().top, behavior: "smooth" }) // Scroll to top of category grid
   })
 
   /* ===== FAQ & BACK TO TOP ===== */
@@ -136,21 +136,21 @@ document.addEventListener("DOMContentLoaded", () => {
       cartList.insertAdjacentHTML(
         "beforeend",
         `
-        <li class="cart-item">
-          <div class="item-left">
-            <img src="${item.img}" alt="${item.name}" onerror="this.src='images/placeholder.jpg'">
-            <div class="item-details">
-              <p class="item-name">${item.name}</p>
-              <small>₦${item.price.toLocaleString()} × ${item.qty}</small>
-            </div>
-          </div>
-          <div class="item-controls">
-            <button class="qty-btn" data-action="dec" data-index="${i}"><i class="fas fa-minus"></i></button>
-            <button class="qty-btn" data-action="inc" data-index="${i}"><i class="fas fa-plus"></i></button>
-            <button class="remove-item" data-index="${i}"><i class="fas fa-trash-alt"></i></button>
-          </div>
-        </li>
-      `,
+    <li class="cart-item">
+      <div class="item-left">
+        <img src="${item.img}" alt="${item.name}" onerror="this.src='images/placeholder.jpg'">
+        <div class="item-details">
+          <p class="item-name">${item.name}</p>
+          <small>₦${item.price.toLocaleString()} × ${item.qty}</small>
+        </div>
+      </div>
+      <div class="item-controls">
+        <button class="qty-btn" data-action="dec" data-index="${i}"><i class="fas fa-minus"></i></button>
+        <button class="qty-btn" data-action="inc" data-index="${i}"><i class="fas fa-plus"></i></button>
+        <button class="remove-item" data-index="${i}"><i class="fas fa-trash-alt"></i></button>
+      </div>
+    </li>
+  `,
       )
     })
 
@@ -177,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const email = document.getElementById("email")
   const phone = document.getElementById("phone")
   const address = document.getElementById("address")
+  const orderNotes = document.getElementById("note")
   const previewUl = document.getElementById("orderPreview")
   const modalSubEl = document.getElementById("modalSub")
   const shipSelect = document.getElementById("shipSelect")
@@ -295,6 +296,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerName = fullName.value.trim()
     const customerPhone = phone.value.trim()
     const customerAddress = address.value.trim()
+    const shippingOption = shipSelect.value // Get the selected shipping option value
+    const orderNotesVal = (orderNotes?.value || "").trim() // Get the notes value, default to empty string
 
     if (amount <= 0) {
       alert("Cart total must be greater than zero to proceed with payment.")
@@ -310,6 +313,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize Paystack handler
     const PaystackPop = window.PaystackPop // Declare the PaystackPop variable
+    console.log("Type of window.PaystackPop:", typeof window.PaystackPop)
+    console.log("Is PaystackPop.setup a function?", typeof PaystackPop?.setup === "function")
+
+    // Define the callback function separately as a regular function
+    function paystackCallback(response) {
+      console.log("Paystack callback function entered.") // New log
+      const transactionRef = response.reference
+      alert("Payment successful! Verifying transaction...")
+
+      // Use an IIFE (Immediately Invoked Function Expression) for the async logic
+      ;(async () => {
+        try {
+          // IMPORTANT: Updated URL for Netlify Functions
+          const verificationResponse = await fetch("/.netlify/functions/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              reference: transactionRef,
+              customerEmail: customerEmail,
+              cartItems: cartItems,
+              amount: amount / 100, // Send amount back in Naira for server-side check
+              shippingOption: shippingOption, // Add shipping option to server payload
+              orderNotes: orderNotesVal, // Add order notes to server payload
+            }),
+          })
+
+          const verificationData = await verificationResponse.json()
+
+          if (verificationResponse.ok) {
+            console.log("Server-side verification successful:", verificationData)
+            alert("Order confirmed! Thank you for your purchase.")
+            // Now you can proceed with clearing the cart, closing modal, and sending emails
+            cartItems.length = 0 // Clear the array
+            saveCart()
+            renderCart(false)
+            modal?.classList.remove("show")
+
+            // TODO: In the next step, we'll add logic here to trigger email sending
+            // using another serverless function.
+          } else {
+            console.error("Server-side verification failed:", verificationData)
+            alert("Payment successful, but verification failed. Please contact support.")
+            // Do NOT clear cart or close modal if verification fails,
+            // as the order is not confirmed.
+          }
+        } catch (error) {
+          console.error("Error during server-side verification fetch:", error)
+          alert("An error occurred during payment verification. Please contact support.")
+        }
+      })() // Immediately invoke the async function
+    }
+
+    // Define onClose as a regular function too
+    function paystackOnClose() {
+      // This function is called when the user closes the payment modal without completing payment
+      alert("Payment cancelled by user.")
+    }
+
     const handler = PaystackPop.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email: customerEmail,
@@ -320,7 +381,9 @@ document.addEventListener("DOMContentLoaded", () => {
         customer_name: customerName,
         customer_phone: customerPhone,
         customer_address: customerAddress,
-        cart_items: JSON.stringify(cartItems), // Pass cart items as stringified JSON
+        cart_items: JSON.stringify(cartItems),
+        shipping_option: shippingOption, // Add shipping option to metadata
+        order_notes: orderNotesVal, // Add order notes to metadata
         custom_fields: [
           // Optional: for display on Paystack dashboard
           {
@@ -343,34 +406,20 @@ document.addEventListener("DOMContentLoaded", () => {
             variable_name: "cart_items",
             value: JSON.stringify(cartItems),
           },
+          {
+            display_name: "Shipping Option",
+            variable_name: "shipping_option",
+            value: shippingOption,
+          },
+          {
+            display_name: "Order Notes",
+            variable_name: "order_notes",
+            value: orderNotesVal,
+          },
         ],
       },
-      callback: (response) => {
-        // This function is called after payment is successful
-        const transactionRef = response.reference
-        alert("Payment successful! Transaction Reference: " + transactionRef)
-
-        // IMPORTANT: This is where you'll trigger server-side verification.
-        // For now, we'll just log it. In the next step, we'll create a Vercel Serverless Function
-        // to securely verify this payment with Paystack's API using your SECRET KEY.
-        console.log("Payment successful, initiating server-side verification for reference:", transactionRef)
-        // Example of what we'll do next:
-        // fetch('/api/verify-payment', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ reference: transactionRef, customerEmail: customerEmail, cartItems: cartItems, amount: amount / 100 })
-        // });
-
-        // Clear cart and close modal after successful payment
-        cartItems.length = 0 // Clear the array
-        saveCart()
-        renderCart(false)
-        modal?.classList.remove("show")
-      },
-      onClose: () => {
-        // This function is called when the user closes the payment modal without completing payment
-        alert("Payment cancelled by user.")
-      },
+      callback: paystackCallback, // Reference the separately defined function
+      onClose: paystackOnClose, // Reference the separately defined function
     })
     handler.openIframe() // Open the Paystack payment modal
   })
